@@ -12,13 +12,18 @@ import { CoinGeckoService } from '../../core/api/coin-gecko.service';
 import type { Coin } from '../../models/coin.model';
 import { AssetCardSkeletonComponent } from '../../shared/components/asset-card-skeleton/asset-card-skeleton.component';
 import { AssetCardComponent } from '../../shared/components/asset-card/asset-card.component';
+import { SearchBarComponent } from '../../shared/components/search-bar/search-bar.component';
 
 const MARKETS_PER_PAGE = 10;
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [AssetCardComponent, AssetCardSkeletonComponent],
+  imports: [
+    AssetCardComponent,
+    AssetCardSkeletonComponent,
+    SearchBarComponent,
+  ],
   templateUrl: './dashboard.component.html',
   host: {
     class: 'flex min-h-0 w-full flex-1 flex-col',
@@ -31,6 +36,24 @@ export class DashboardComponent {
   readonly isLoading = signal(true);
   readonly loadError = signal<string | null>(null);
   readonly coins = signal<readonly Coin[]>([]);
+  readonly searchQuery = signal('');
+  readonly filteredCoins = computed((): readonly Coin[] => {
+    const needle = this.searchQuery().trim().toLowerCase();
+    const list = this.coins();
+    if (!needle) {
+      return list;
+    }
+    return list.filter((coin) => {
+      const name = coin.name.toLowerCase();
+      const symbol = coin.symbol.toLowerCase();
+      const id = coin.id.toLowerCase();
+      return (
+        name.includes(needle) ||
+        symbol.includes(needle) ||
+        id.includes(needle)
+      );
+    });
+  });
   readonly currentPage = signal(1);
   /** Longitud de la última respuesta; si es menor que `MARKETS_PER_PAGE`, no hay página siguiente. */
   private readonly lastPageResultCount = signal(0);
