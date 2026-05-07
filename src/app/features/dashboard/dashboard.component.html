@@ -7,9 +7,17 @@
   ></div>
   <ul
     class="relative grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
+    [attr.aria-busy]="isLoading()"
+    [attr.aria-label]="isLoading() ? 'Loading market data' : 'Market assets'"
   >
-    @for (coin of coins(); track coin.id) {
-      <li appAssetCard [coin]="coin"></li>
+    @if (isLoading()) {
+      @for (i of skeletonPlaceholders; track i) {
+        <li appAssetCardSkeleton></li>
+      }
+    } @else {
+      @for (coin of coins(); track coin.id) {
+        <li appAssetCard [coin]="coin"></li>
+      }
     }
   </ul>
 </main>
