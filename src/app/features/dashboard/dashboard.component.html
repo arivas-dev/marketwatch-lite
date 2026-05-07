@@ -5,6 +5,14 @@
     class="pointer-events-none absolute inset-0 mx-auto max-w-6xl bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(148,163,184,0.22),transparent)] dark:bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(148,163,184,0.14),transparent)]"
     aria-hidden="true"
   ></div>
+  @if (loadError(); as err) {
+    <div
+      class="relative mb-5 w-full rounded-2xl border border-rose-500/25 bg-rose-500/10 px-4 py-3 text-sm text-rose-900 backdrop-blur-md dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-100"
+      role="alert"
+    >
+      {{ err }}
+    </div>
+  }
   <ul
     class="relative grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
     [attr.aria-busy]="isLoading()"
