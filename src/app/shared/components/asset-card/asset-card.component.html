@@ -45,6 +45,27 @@
   </p>
 </div>
 
+@if (hasSparkline()) {
+  <div
+    class="mt-4 w-full min-h-[52px]"
+    role="img"
+    [attr.aria-label]="'7-day price trend for ' + coin().name"
+  >
+    <apx-chart-core
+      [chart]="sparklineChart"
+      [series]="sparklineSeries()"
+      [stroke]="sparklineStroke"
+      [fill]="sparklineFill"
+      [colors]="sparklineColors()"
+      [dataLabels]="sparklineDataLabels"
+      [tooltip]="sparklineTooltip"
+      [grid]="sparklineGrid"
+      [xaxis]="sparklineXaxis"
+      [yaxis]="sparklineYaxis"
+    />
+  </div>
+}
+
 <div class="mt-4 flex flex-wrap items-center gap-2">
   @if (coin().price_change_percentage_24h >= 0) {
     <span

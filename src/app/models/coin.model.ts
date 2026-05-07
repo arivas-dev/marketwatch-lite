@@ -12,4 +12,6 @@ export interface Coin {
     high_24h: number;
     low_24h: number;
     last_updated: string;
+    /** CoinGecko markets: `sparkline_in_7d.price` (puntos ~7d). */
+    sparkline_in_7d: { price: number[] };
   }
