@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   templateUrl: './asset-card-skeleton.component.html',
   host: {
     class:
-      'flex flex-col rounded-2xl border border-white/20 bg-white/10 p-5 shadow-lg shadow-black/20 backdrop-blur-md pointer-events-none select-none',
+      'flex flex-col rounded-2xl border border-slate-200/80 bg-white/70 p-5 shadow-md shadow-slate-900/5 backdrop-blur-md pointer-events-none select-none dark:border-white/20 dark:bg-white/10 dark:shadow-lg dark:shadow-black/20',
     role: 'presentation',
     'aria-hidden': 'true',
   },

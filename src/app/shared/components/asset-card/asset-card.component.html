@@ -2,7 +2,7 @@
   <div class="flex min-w-0 flex-1 items-center gap-3">
     <div class="relative shrink-0">
       <img
-        class="h-11 w-11 rounded-full object-cover ring-2 ring-white/25"
+        class="h-11 w-11 rounded-full object-cover ring-2 ring-slate-200/80 dark:ring-white/25"
         [src]="coin().image"
         [alt]="coin().name"
         width="44"
@@ -11,11 +11,13 @@
       />
     </div>
     <div class="min-w-0">
-      <p class="truncate text-sm font-semibold tracking-tight text-white">
+      <p
+        class="truncate text-sm font-semibold tracking-tight text-slate-900 dark:text-white"
+      >
         {{ coin().name }}
       </p>
       <p
-        class="mt-0.5 text-[11px] font-medium uppercase tracking-[0.14em] text-white/55"
+        class="mt-0.5 text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-white/55"
       >
         {{ coin().symbol }}
       </p>
@@ -23,7 +25,7 @@
   </div>
   @if (coin().market_cap_rank > 0) {
     <span
-      class="shrink-0 rounded-full border border-white/15 bg-white/5 px-2 py-0.5 text-[10px] font-medium tabular-nums text-white/70"
+      class="shrink-0 rounded-full border border-slate-200/80 bg-slate-100/80 px-2 py-0.5 text-[10px] font-medium tabular-nums text-slate-600 dark:border-white/15 dark:bg-white/5 dark:text-white/70"
     >
       #{{ coin().market_cap_rank }}
     </span>
@@ -32,59 +34,76 @@
 
 <div class="mt-5">
   <p
-    class="text-[11px] font-medium uppercase tracking-[0.12em] text-white/45"
+    class="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500 dark:text-white/45"
   >
     Price
   </p>
   <p
-    class="mt-1 text-2xl font-semibold tracking-tight text-white tabular-nums sm:text-[1.65rem]"
+    class="mt-1 text-2xl font-semibold tracking-tight text-slate-900 tabular-nums sm:text-[1.65rem] dark:text-white"
   >
     {{ coin().current_price | currency: 'USD' : 'symbol' : '1.2-8' }}
   </p>
 </div>
 
 <div class="mt-4 flex flex-wrap items-center gap-2">
-  <span
-    class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold tabular-nums"
-    [class.border-emerald-400/30]="coin().price_change_percentage_24h >= 0"
-    [class.bg-emerald-500/15]="coin().price_change_percentage_24h >= 0"
-    [class.text-emerald-100]="coin().price_change_percentage_24h >= 0"
-    [class.border-rose-400/30]="coin().price_change_percentage_24h < 0"
-    [class.bg-rose-500/15]="coin().price_change_percentage_24h < 0"
-    [class.text-rose-100]="coin().price_change_percentage_24h < 0"
-  >
+  @if (coin().price_change_percentage_24h >= 0) {
     <span
-      class="text-[10px] font-medium uppercase tracking-wide text-white/50"
+      class="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold tabular-nums text-emerald-800 dark:border-emerald-400/30 dark:bg-emerald-500/15 dark:text-emerald-100"
     >
-      24h
+      <span
+        class="text-[10px] font-medium uppercase tracking-wide text-emerald-700/80 dark:text-white/50"
+      >
+        24h
+      </span>
+      {{ coin().price_change_percentage_24h | number: '1.2-2' }}%
     </span>
-    {{ coin().price_change_percentage_24h | number: '1.2-2' }}%
-  </span>
-  <span
-    class="text-xs font-medium tabular-nums text-white/80"
-    [class.text-emerald-200]="coin().price_change_percentage_1h_in_currency >= 0"
-    [class.text-rose-200]="coin().price_change_percentage_1h_in_currency < 0"
-  >
-    1h {{ coin().price_change_percentage_1h_in_currency | number: '1.2-2' }}%
-  </span>
+  } @else {
+    <span
+      class="inline-flex items-center gap-1.5 rounded-full border border-rose-500/25 bg-rose-500/10 px-2.5 py-1 text-xs font-semibold tabular-nums text-rose-800 dark:border-rose-400/30 dark:bg-rose-500/15 dark:text-rose-100"
+    >
+      <span
+        class="text-[10px] font-medium uppercase tracking-wide text-rose-700/80 dark:text-white/50"
+      >
+        24h
+      </span>
+      {{ coin().price_change_percentage_24h | number: '1.2-2' }}%
+    </span>
+  }
+  @if (coin().price_change_percentage_1h_in_currency >= 0) {
+    <span
+      class="text-xs font-medium tabular-nums text-emerald-700 dark:text-emerald-200"
+    >
+      1h {{ coin().price_change_percentage_1h_in_currency | number: '1.2-2' }}%
+    </span>
+  } @else {
+    <span
+      class="text-xs font-medium tabular-nums text-rose-700 dark:text-rose-200"
+    >
+      1h {{ coin().price_change_percentage_1h_in_currency | number: '1.2-2' }}%
+    </span>
+  }
 </div>
 
-<div class="mt-4 border-t border-white/10 pt-4">
+<div class="mt-4 border-t border-slate-200/80 pt-4 dark:border-white/10">
   <p
-    class="text-[11px] font-medium uppercase tracking-[0.12em] text-white/45"
+    class="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500 dark:text-white/45"
   >
     24h range
   </p>
   <div class="mt-2 grid grid-cols-2 gap-3 text-xs">
     <div>
-      <p class="text-[11px] text-white/45">High</p>
-      <p class="mt-0.5 font-medium tabular-nums text-white">
+      <p class="text-[11px] text-slate-500 dark:text-white/45">High</p>
+      <p
+        class="mt-0.5 font-medium tabular-nums text-slate-900 dark:text-white"
+      >
         {{ coin().high_24h | currency: 'USD' : 'symbol' : '1.2-6' }}
       </p>
     </div>
     <div>
-      <p class="text-[11px] text-white/45">Low</p>
-      <p class="mt-0.5 font-medium tabular-nums text-white">
+      <p class="text-[11px] text-slate-500 dark:text-white/45">Low</p>
+      <p
+        class="mt-0.5 font-medium tabular-nums text-slate-900 dark:text-white"
+      >
         {{ coin().low_24h | currency: 'USD' : 'symbol' : '1.2-6' }}
       </p>
     </div>
