@@ -1,0 +1,68 @@
+import type { Coin } from '../models/coin.model';
+
+export const DEMO_COINS: readonly Coin[] = [
+  {
+    id: 'bitcoin',
+    symbol: 'btc',
+    name: 'Bitcoin',
+    image:
+      'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
+    current_price: 64_231.42,
+    market_cap: 1_270_000_000_000,
+    market_cap_rank: 1,
+    price_change_percentage_24h: 1.24,
+    price_change_percentage_1h_in_currency: 0.08,
+    total_volume: 28_500_000_000,
+    high_24h: 64_890.0,
+    low_24h: 63_120.5,
+    last_updated: '2026-05-07T12:00:00.000Z',
+  },
+  {
+    id: 'ethereum',
+    symbol: 'eth',
+    name: 'Ethereum',
+    image:
+      'https://assets.coingecko.com/coins/images/279/large/ethereum.png',
+    current_price: 3_412.18,
+    market_cap: 410_000_000_000,
+    market_cap_rank: 2,
+    price_change_percentage_24h: -0.42,
+    price_change_percentage_1h_in_currency: -0.11,
+    total_volume: 14_200_000_000,
+    high_24h: 3_480.0,
+    low_24h: 3_360.0,
+    last_updated: '2026-05-07T12:00:00.000Z',
+  },
+  {
+    id: 'solana',
+    symbol: 'sol',
+    name: 'Solana',
+    image:
+      'https://assets.coingecko.com/coins/images/4128/large/solana.png',
+    current_price: 148.92,
+    market_cap: 72_000_000_000,
+    market_cap_rank: 5,
+    price_change_percentage_24h: 2.05,
+    price_change_percentage_1h_in_currency: 0.35,
+    total_volume: 3_100_000_000,
+    high_24h: 152.1,
+    low_24h: 145.0,
+    last_updated: '2026-05-07T12:00:00.000Z',
+  },
+  {
+    id: 'cardano',
+    symbol: 'ada',
+    name: 'Cardano',
+    image:
+      'https://assets.coingecko.com/coins/images/975/large/cardano.png',
+    current_price: 0.52,
+    market_cap: 18_500_000_000,
+    market_cap_rank: 8,
+    price_change_percentage_24h: -0.18,
+    price_change_percentage_1h_in_currency: 0.02,
+    total_volume: 420_000_000,
+    high_24h: 0.53,
+    low_24h: 0.51,
+    last_updated: '2026-05-07T12:00:00.000Z',
+  },
+];
