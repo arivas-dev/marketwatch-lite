@@ -4,7 +4,8 @@ import { Observable, map } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import type { Coin } from '../../models/coin.model';
-import type { CoinGeckoMarketRow } from './coin-gecko.types';
+import type { CoinDetailView } from '../../models/coin-detail.model';
+import type { CoinGeckoCoinDetailResponse, CoinGeckoMarketRow } from './coin-gecko.types';
 
 const COINGECKO_API_V3 = 'https://api.coingecko.com/api/v3';
 
@@ -35,6 +36,30 @@ export class CoinGeckoService {
       })
       .pipe(map((rows) => rows.map(mapMarketRowToCoin)));
   }
+
+  getCoinDetail(coinId: string, summary: Coin): Observable<CoinDetailView> {
+    const key = environment.coingeckoDemoApiKey.trim();
+    const headers = key
+      ? new HttpHeaders({ 'x-cg-demo-api-key': key })
+      : new HttpHeaders();
+
+    const params = new HttpParams()
+      .set('localization', 'false')
+      .set('tickers', 'false')
+      .set('market_data', 'true')
+      .set('community_data', 'false')
+      .set('developer_data', 'false')
+      .set('sparkline', 'true');
+
+    const encodedId = encodeURIComponent(coinId);
+
+    return this.http
+      .get<CoinGeckoCoinDetailResponse>(
+        `${COINGECKO_API_V3}/coins/${encodedId}`,
+        { headers, params },
+      )
+      .pipe(map((body) => mapCoinDetailResponse(body, summary)));
+  }
 }
 
 function mapMarketRowToCoin(row: CoinGeckoMarketRow): Coin {
@@ -57,5 +82,49 @@ function mapMarketRowToCoin(row: CoinGeckoMarketRow): Coin {
     sparkline_in_7d: {
       price: prices ? [...prices] : [],
     },
+  };
+}
+
+function htmlDescriptionToPlain(html: string): string {
+  return html
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function firstHomepageUrl(links: CoinGeckoCoinDetailResponse['links']): string | null {
+  const raw = links?.homepage?.find((h) => typeof h === 'string' && h.trim().length > 0);
+  if (!raw) {
+    return null;
+  }
+  try {
+    const u = new URL(raw.trim());
+    return u.protocol === 'http:' || u.protocol === 'https:' ? u.href : null;
+  } catch {
+    return null;
+  }
+}
+
+function mapCoinDetailResponse(
+  body: CoinGeckoCoinDetailResponse,
+  summary: Coin,
+): CoinDetailView {
+  const md = body.market_data;
+  const fromApi = md?.sparkline_7d?.price;
+  const sparkline7d: readonly number[] =
+    fromApi && fromApi.length > 0 ? [...fromApi] : [...summary.sparkline_in_7d.price];
+
+  const descRaw = body.description?.en?.trim() ?? '';
+  const descriptionPlain = descRaw ? htmlDescriptionToPlain(descRaw) : '';
+
+  return {
+    summary,
+    descriptionPlain,
+    homepageUrl: firstHomepageUrl(body.links),
+    athUsd: md?.ath?.usd ?? 0,
+    athDateIso: md?.ath_date?.usd ?? '',
+    atlUsd: md?.atl?.usd ?? 0,
+    atlDateIso: md?.atl_date?.usd ?? '',
+    sparkline7d,
   };
 }

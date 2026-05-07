@@ -14,3 +14,16 @@ export interface CoinGeckoMarketRow {
   readonly price_change_percentage_1h_in_currency: number | null;
   readonly sparkline_in_7d?: { readonly price: readonly number[] } | null;
 }
+
+/** Respuesta parcial de `GET /coins/{id}` (solo campos que mapeamos). */
+export interface CoinGeckoCoinDetailResponse {
+  readonly description?: { readonly en?: string };
+  readonly links?: { readonly homepage?: readonly string[] };
+  readonly market_data?: {
+    readonly ath?: { readonly usd?: number | null };
+    readonly ath_date?: { readonly usd?: string | null };
+    readonly atl?: { readonly usd?: number | null };
+    readonly atl_date?: { readonly usd?: string | null };
+    readonly sparkline_7d?: { readonly price?: readonly number[] | null } | null;
+  } | null;
+}

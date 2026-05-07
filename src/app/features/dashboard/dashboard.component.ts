@@ -12,6 +12,7 @@ import { CoinGeckoService } from '../../core/api/coin-gecko.service';
 import type { Coin } from '../../models/coin.model';
 import { AssetCardSkeletonComponent } from '../../shared/components/asset-card-skeleton/asset-card-skeleton.component';
 import { AssetCardComponent } from '../../shared/components/asset-card/asset-card.component';
+import { AssetDetailModalComponent } from '../../shared/components/asset-detail-modal/asset-detail-modal.component';
 import { SearchBarComponent } from '../../shared/components/search-bar/search-bar.component';
 
 const MARKETS_PER_PAGE = 10;
@@ -22,6 +23,7 @@ const MARKETS_PER_PAGE = 10;
   imports: [
     AssetCardComponent,
     AssetCardSkeletonComponent,
+    AssetDetailModalComponent,
     SearchBarComponent,
   ],
   templateUrl: './dashboard.component.html',
@@ -37,6 +39,8 @@ export class DashboardComponent {
   readonly loadError = signal<string | null>(null);
   readonly coins = signal<readonly Coin[]>([]);
   readonly searchQuery = signal('');
+  /** Activo cuyo detalle se muestra en el modal; `null` si está cerrado. */
+  readonly detailCoin = signal<Coin | null>(null);
   readonly filteredCoins = computed((): readonly Coin[] => {
     const needle = this.searchQuery().trim().toLowerCase();
     const list = this.coins();
@@ -86,6 +90,21 @@ export class DashboardComponent {
       return;
     }
     this.loadMarketsForPage(this.currentPage() + 1);
+  }
+
+  openAssetDetail(coin: Coin): void {
+    this.detailCoin.set(coin);
+  }
+
+  closeAssetDetail(): void {
+    this.detailCoin.set(null);
+  }
+
+  onDetailCardKeydown(event: KeyboardEvent, coin: Coin): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.openAssetDetail(coin);
+    }
   }
 
   private loadMarketsForPage(page: number): void {

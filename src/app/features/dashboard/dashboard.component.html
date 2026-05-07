@@ -1,3 +1,7 @@
+<app-asset-detail-modal
+  [openCoin]="detailCoin()"
+  (closed)="closeAssetDetail()"
+/>
 <main
   class="relative mx-auto flex w-full max-w-6xl flex-1 flex-col bg-gradient-to-br from-slate-100 via-white to-slate-100 px-4 py-8 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"
 >
@@ -40,7 +44,15 @@
       </li>
     } @else {
       @for (coin of filteredCoins(); track coin.id) {
-        <li appAssetCard [coin]="coin"></li>
+        <li
+          appAssetCard
+          [coin]="coin"
+          tabindex="0"
+          role="button"
+          [attr.aria-label]="'Ver detalle de ' + coin.name"
+          (click)="openAssetDetail(coin)"
+          (keydown)="onDetailCardKeydown($event, coin)"
+        ></li>
       }
     }
   </ul>
