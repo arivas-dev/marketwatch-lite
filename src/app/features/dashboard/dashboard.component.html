@@ -28,4 +28,32 @@
       }
     }
   </ul>
+  @if (!loadError()) {
+    <nav
+      class="relative mt-8 flex w-full flex-wrap items-center justify-center gap-3"
+      aria-label="Paginación del listado de mercado"
+    >
+      <button
+        type="button"
+        class="inline-flex min-h-11 min-w-[7rem] items-center justify-center rounded-xl border border-slate-300/80 bg-white/60 px-4 text-sm font-medium text-slate-800 shadow-sm backdrop-blur-md transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 disabled:cursor-not-allowed disabled:opacity-45 dark:border-white/15 dark:bg-white/10 dark:text-slate-100 dark:hover:bg-white/15 dark:focus-visible:outline-slate-500"
+        [disabled]="!canGoPrevious() || isLoading()"
+        (click)="goToPreviousPage()"
+      >
+        Anterior
+      </button>
+      <span
+        class="inline-flex min-h-11 items-center rounded-xl border border-slate-200/80 bg-white/50 px-5 text-sm tabular-nums text-slate-700 backdrop-blur-md dark:border-white/15 dark:bg-white/10 dark:text-slate-200"
+      >
+        Página {{ currentPage() }}
+      </span>
+      <button
+        type="button"
+        class="inline-flex min-h-11 min-w-[7rem] items-center justify-center rounded-xl border border-slate-300/80 bg-white/60 px-4 text-sm font-medium text-slate-800 shadow-sm backdrop-blur-md transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 disabled:cursor-not-allowed disabled:opacity-45 dark:border-white/15 dark:bg-white/10 dark:text-slate-100 dark:hover:bg-white/15 dark:focus-visible:outline-slate-500"
+        [disabled]="!hasNextPage() || isLoading()"
+        (click)="goToNextPage()"
+      >
+        Siguiente
+      </button>
+    </nav>
+  }
 </main>

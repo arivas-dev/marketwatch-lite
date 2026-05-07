@@ -12,17 +12,19 @@ const COINGECKO_API_V3 = 'https://api.coingecko.com/api/v3';
 export class CoinGeckoService {
   private readonly http = inject(HttpClient);
 
-  getTopMarkets(perPage: number): Observable<readonly Coin[]> {
+  getTopMarkets(perPage: number, page: number): Observable<readonly Coin[]> {
     const key = environment.coingeckoDemoApiKey.trim();
     const headers = key
       ? new HttpHeaders({ 'x-cg-demo-api-key': key })
       : new HttpHeaders();
 
+    const safePage = Math.max(1, Math.floor(page));
+
     const params = new HttpParams()
       .set('vs_currency', 'usd')
       .set('order', 'market_cap_desc')
       .set('per_page', String(perPage))
-      .set('page', '1')
+      .set('page', String(safePage))
       .set('sparkline', 'true')
       .set('price_change_percentage', '1h');
 
