@@ -1,5 +1,169 @@
-<header class="w-full border-b border-gray-200 bg-white">
-  <div class="mx-auto flex h-14 max-w-6xl items-center px-4">
-    <span class="text-sm font-medium text-gray-900">MarketWatch Lite</span>
+<header
+  class="relative z-50 w-full border-b border-slate-200/80 bg-white/75 backdrop-blur-md dark:border-white/10 dark:bg-slate-950/80"
+>
+  <div
+    class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4"
+  >
+    <div class="flex min-w-0 flex-col">
+      <span
+        class="truncate text-sm font-semibold tracking-tight text-slate-900 dark:text-white"
+      >
+        MarketWatch Lite
+      </span>
+      <span
+        class="hidden text-[11px] font-medium text-slate-500 sm:inline dark:text-white/50"
+      >
+        Panel en vivo
+      </span>
+    </div>
+
+    <div class="flex shrink-0 items-center gap-2">
+      <!-- Escritorio: control de tema siempre visible (no dentro del menú) -->
+      <div class="hidden items-center gap-1 lg:flex">
+        <button
+          type="button"
+          class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/90 bg-white/80 text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 dark:border-white/15 dark:bg-white/10 dark:text-white dark:hover:border-white/25 dark:hover:bg-white/[0.14]"
+          (click)="toggleTheme()"
+          [attr.aria-label]="
+            isDark() ? 'Activar modo claro' : 'Activar modo oscuro'
+          "
+        >
+          @if (isDark()) {
+            <svg
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+              />
+            </svg>
+          } @else {
+            <svg
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              aria-hidden="true"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          }
+        </button>
+      </div>
+
+      <!-- Móvil / tablet: menú hamburguesa con apariencia -->
+      <button
+        type="button"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/90 bg-white/80 text-slate-800 shadow-sm transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 lg:hidden dark:border-white/15 dark:bg-white/10 dark:text-white dark:hover:bg-white/[0.12]"
+        (click)="toggleMobileMenu()"
+        [attr.aria-expanded]="mobileMenuOpen()"
+        aria-controls="header-mobile-panel"
+        [attr.aria-label]="
+          mobileMenuOpen() ? 'Cerrar menú' : 'Abrir menú'
+        "
+      >
+        @if (mobileMenuOpen()) {
+          <svg
+            class="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        } @else {
+          <svg
+            class="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        }
+      </button>
+    </div>
   </div>
+
+  @if (mobileMenuOpen()) {
+    <button
+      type="button"
+      class="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-[1px] lg:hidden dark:bg-black/50"
+      (click)="closeMobileMenu()"
+      aria-label="Cerrar menú"
+      tabindex="-1"
+    ></button>
+    <div
+      id="header-mobile-panel"
+      class="absolute right-4 top-full z-50 mt-2 w-[min(18rem,calc(100vw-2rem))] rounded-2xl border border-slate-200/90 bg-white/95 p-3 shadow-xl shadow-slate-900/10 backdrop-blur-md lg:hidden dark:border-white/15 dark:bg-slate-900/95 dark:shadow-black/40"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Menú"
+    >
+      <p
+        class="px-1 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-white/45"
+      >
+        Apariencia
+      </p>
+      <div class="grid grid-cols-2 gap-2">
+        <button
+          type="button"
+          class="flex flex-col items-center gap-1.5 rounded-xl border px-3 py-3 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
+          [ngClass]="
+            !isDark()
+              ? 'border-emerald-500/50 bg-emerald-50 text-emerald-900 dark:border-emerald-400/40 dark:bg-emerald-500/15 dark:text-emerald-100'
+              : 'border-slate-200/80 bg-white text-slate-700 hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-white/80 dark:hover:bg-white/10'
+          "
+          (click)="setThemeLight(); closeMobileMenu()"
+        >
+          <svg
+            class="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+            />
+          </svg>
+          Claro
+        </button>
+        <button
+          type="button"
+          class="flex flex-col items-center gap-1.5 rounded-xl border px-3 py-3 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
+          [ngClass]="
+            isDark()
+              ? 'border-emerald-400/45 bg-emerald-500/15 text-emerald-100'
+              : 'border-slate-200/80 bg-white text-slate-700 hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-white/80 dark:hover:bg-white/10'
+          "
+          (click)="setThemeDark(); closeMobileMenu()"
+        >
+          <svg
+            class="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            aria-hidden="true"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+          Oscuro
+        </button>
+      </div>
+    </div>
+  }
 </header>

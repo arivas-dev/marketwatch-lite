@@ -18,6 +18,9 @@ const SIMULATED_LOAD_MS = 1500;
   standalone: true,
   imports: [AssetCardComponent, AssetCardSkeletonComponent],
   templateUrl: './dashboard.component.html',
+  host: {
+    class: 'flex min-h-0 w-full flex-1 flex-col',
+  },
 })
 export class DashboardComponent {
   private readonly destroyRef = inject(DestroyRef);

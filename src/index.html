@@ -1,6 +1,18 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <script>
+    (function () {
+      try {
+        var k = 'mwl-theme';
+        var t = localStorage.getItem(k);
+        var dark =
+          t === 'dark' ||
+          (!t && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (dark) document.documentElement.classList.add('dark');
+      } catch (e) {}
+    })();
+  </script>
   <meta charset="utf-8">
   <title>MarketwatchLite</title>
   <base href="/">
