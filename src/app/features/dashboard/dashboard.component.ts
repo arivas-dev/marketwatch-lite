@@ -92,6 +92,14 @@ export class DashboardComponent {
     this.loadMarketsForPage(this.currentPage() + 1);
   }
 
+  /** Vuelve a pedir los datos de la página actual (misma paginación y filtros de búsqueda). */
+  refreshMarkets(): void {
+    if (this.isLoading()) {
+      return;
+    }
+    this.loadMarketsForPage(this.currentPage());
+  }
+
   openAssetDetail(coin: Coin): void {
     this.detailCoin.set(coin);
   }

@@ -11,15 +11,66 @@
   ></div>
   @if (loadError(); as err) {
     <div
-      class="relative mb-5 w-full rounded-2xl border border-rose-500/25 bg-rose-500/10 px-4 py-3 text-sm text-rose-900 backdrop-blur-md dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-100"
+      class="relative mb-5 flex w-full flex-col gap-3 rounded-2xl border border-rose-500/25 bg-rose-500/10 px-4 py-3 text-sm text-rose-900 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-100"
       role="alert"
     >
-      {{ err }}
+      <p class="min-w-0 flex-1 leading-relaxed">{{ err }}</p>
+      <button
+        type="button"
+        class="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl border border-rose-600/30 bg-white/80 px-4 py-2 text-sm font-medium text-rose-950 shadow-sm backdrop-blur-md transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-500 disabled:cursor-not-allowed disabled:opacity-45 sm:self-auto dark:border-rose-300/25 dark:bg-slate-900/60 dark:text-rose-50 dark:hover:bg-slate-900/80 dark:focus-visible:outline-rose-400"
+        [disabled]="isLoading()"
+        (click)="refreshMarkets()"
+      >
+        <svg
+          class="h-4 w-4 shrink-0"
+          [class.animate-spin]="isLoading()"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path
+            d="M21 12a9 9 0 1 1-2.64-6.36M21 3v7h-7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        Reintentar
+      </button>
     </div>
   }
   @if (!loadError()) {
-    <div class="relative mb-6 w-full">
-      <app-search-bar [(query)]="searchQuery" />
+    <div
+      class="relative mb-6 flex w-full flex-col gap-3 sm:flex-row sm:items-end sm:gap-3"
+    >
+      <div class="min-w-0 flex-1">
+        <app-search-bar [(query)]="searchQuery" />
+      </div>
+      <button
+        type="button"
+        class="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-300/80 bg-white/60 px-4 text-sm font-medium text-slate-800 shadow-sm backdrop-blur-md transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 disabled:cursor-not-allowed disabled:opacity-45 dark:border-white/15 dark:bg-white/10 dark:text-slate-100 dark:hover:bg-white/15 dark:focus-visible:outline-slate-500 sm:w-auto sm:self-auto"
+        [disabled]="isLoading()"
+        (click)="refreshMarkets()"
+        aria-label="Actualizar datos del mercado"
+      >
+        <svg
+          class="h-4 w-4 shrink-0"
+          [class.animate-spin]="isLoading()"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path
+            d="M21 12a9 9 0 1 1-2.64-6.36M21 3v7h-7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        Actualizar
+      </button>
     </div>
   }
   <ul
