@@ -43,7 +43,7 @@
     </div>
   }
   @if (!loadError()) {
-    <div class="relative mb-6 flex w-full flex-col gap-2 sm:gap-3">
+    <div class="relative mb-6 flex w-full flex-col gap-3 sm:gap-3">
       <div
         class="flex w-full flex-col gap-3 sm:flex-row sm:items-end sm:gap-3"
       >
@@ -52,7 +52,7 @@
         </div>
         <button
           type="button"
-          class="inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-300/80 bg-white/60 px-4 text-sm font-medium text-slate-800 shadow-sm backdrop-blur-md transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 disabled:cursor-not-allowed disabled:opacity-45 dark:border-white/15 dark:bg-white/10 dark:text-slate-100 dark:hover:bg-white/15 dark:focus-visible:outline-slate-500 sm:w-auto sm:self-auto"
+          class="inline-flex cursor-pointer h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-300/80 bg-white/60 px-4 text-sm font-medium text-slate-800 shadow-sm backdrop-blur-md transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 disabled:cursor-not-allowed disabled:opacity-45 dark:border-white/15 dark:bg-white/10 dark:text-slate-100 dark:hover:bg-white/15 dark:focus-visible:outline-slate-500 sm:w-auto sm:self-auto"
           [disabled]="isLoading()"
           (click)="refreshMarkets()"
           aria-label="Actualizar datos del mercado"
@@ -75,42 +75,221 @@
           Actualizar
         </button>
       </div>
+      <div
+        class="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+        role="group"
+        aria-label="Tipo de vista del listado"
+      >
+        <p class="text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-white/45">
+          Vista
+        </p>
+        <div
+          class="inline-flex w-full rounded-xl border border-slate-300/70 bg-white/50 p-1 shadow-sm backdrop-blur-md dark:border-white/15 dark:bg-white/10 sm:w-auto"
+        >
+          <button
+            type="button"
+            class="flex cursor-pointer flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 sm:flex-initial sm:px-4 sm:text-sm"
+            [class.bg-white]="marketView() === 'cards'"
+            [class.text-slate-900]="marketView() === 'cards'"
+            [class.shadow-sm]="marketView() === 'cards'"
+            [class.dark:bg-white/15]="marketView() === 'cards'"
+            [class.dark:text-white]="marketView() === 'cards'"
+            [class.text-slate-600]="marketView() !== 'cards'"
+            [class.dark:text-white/65]="marketView() !== 'cards'"
+            [attr.aria-pressed]="marketView() === 'cards'"
+            (click)="setMarketView('cards')"
+          >
+            <svg class="h-4 w-4 shrink-0 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+            </svg>
+            Tarjetas
+          </button>
+          <button
+            type="button"
+            class="flex cursor-pointer flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 sm:flex-initial sm:px-4 sm:text-sm"
+            [class.bg-white]="marketView() === 'table'"
+            [class.text-slate-900]="marketView() === 'table'"
+            [class.shadow-sm]="marketView() === 'table'"
+            [class.dark:bg-white/15]="marketView() === 'table'"
+            [class.dark:text-white]="marketView() === 'table'"
+            [class.text-slate-600]="marketView() !== 'table'"
+            [class.dark:text-white/65]="marketView() !== 'table'"
+            [attr.aria-pressed]="marketView() === 'table'"
+            (click)="setMarketView('table')"
+          >
+            <svg class="h-4 w-4 shrink-0 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M4 6h16M4 12h16M4 18h10" stroke-linecap="round" />
+            </svg>
+            Tabla
+          </button>
+        </div>
+      </div>
     </div>
   }
-  <ul
-    class="relative grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
-    [attr.aria-busy]="isLoading()"
-    [attr.aria-label]="isLoading() ? 'Loading market data' : 'Market assets'"
-  >
-    @if (isLoading()) {
-      @for (i of skeletonPlaceholders; track i) {
-        <li appAssetCardSkeleton></li>
-      }
-    } @else if (
-      filteredCoins().length === 0 && searchQuery().trim().length > 0
-    ) {
-      <li
-        class="col-span-full rounded-2xl border border-slate-200/80 bg-white/50 px-5 py-10 text-center text-sm text-slate-600 backdrop-blur-md dark:border-white/15 dark:bg-white/10 dark:text-slate-300"
-        role="status"
-        aria-live="polite"
-      >
-        No hay activos que coincidan con «{{ searchQuery().trim() }}» en esta
-        página. Prueba otro término o cambia de página.
-      </li>
-    } @else {
-      @for (coin of filteredCoins(); track coin.id) {
+  @if (marketView() === 'cards') {
+    <ul
+      class="relative grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
+      [attr.aria-busy]="isLoading()"
+      [attr.aria-label]="isLoading() ? 'Loading market data' : 'Market assets'"
+    >
+      @if (isLoading()) {
+        @for (i of skeletonPlaceholders; track i) {
+          <li appAssetCardSkeleton></li>
+        }
+      } @else if (
+        filteredCoins().length === 0 && searchQuery().trim().length > 0
+      ) {
         <li
-          appAssetCard
-          [coin]="coin"
-          tabindex="0"
-          role="button"
-          [attr.aria-label]="'Ver detalle de ' + coin.name"
-          (click)="openAssetDetail(coin)"
-          (keydown)="onDetailCardKeydown($event, coin)"
-        ></li>
+          class="col-span-full rounded-2xl border border-slate-200/80 bg-white/50 px-5 py-10 text-center text-sm text-slate-600 backdrop-blur-md dark:border-white/15 dark:bg-white/10 dark:text-slate-300"
+          role="status"
+          aria-live="polite"
+        >
+          No hay activos que coincidan con «{{ searchQuery().trim() }}» en esta
+          página. Prueba otro término o cambia de página.
+        </li>
+      } @else {
+        @for (coin of filteredCoins(); track coin.id) {
+          <li
+            appAssetCard
+            [coin]="coin"
+            tabindex="0"
+            role="button"
+            [attr.aria-label]="'Ver detalle de ' + coin.name"
+            (click)="openAssetDetail(coin)"
+            (keydown)="onDetailCardKeydown($event, coin)"
+          ></li>
+        }
       }
-    }
-  </ul>
+    </ul>
+  } @else {
+    <div
+      class="relative overflow-x-auto rounded-2xl border border-slate-200/80 bg-white/50 shadow-md shadow-slate-900/5 backdrop-blur-md dark:border-white/15 dark:bg-white/10 dark:shadow-black/20"
+      [attr.aria-busy]="isLoading()"
+    >
+      <table class="w-full min-w-[36rem] border-collapse text-left text-sm">
+        <caption class="sr-only">
+          Listado de activos
+        </caption>
+        <thead>
+          <tr
+            class="border-b border-slate-200/90 bg-white/60 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500 dark:border-white/10 dark:bg-white/[0.06] dark:text-white/50"
+          >
+            <th scope="col" class="whitespace-nowrap px-4 py-3 sm:px-5">
+              Activo
+            </th>
+            <th scope="col" class="whitespace-nowrap px-4 py-3 text-right sm:px-5">
+              Precio
+            </th>
+            <th scope="col" class="whitespace-nowrap px-4 py-3 text-right sm:px-5">
+              24h
+            </th>
+            <th scope="col" class="hidden whitespace-nowrap px-4 py-3 text-right md:table-cell sm:px-5">
+              Cap. mercado
+            </th>
+            <th scope="col" class="hidden whitespace-nowrap px-4 py-3 text-right lg:table-cell sm:px-5">
+              Volumen 24h
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200/70 dark:divide-white/10">
+          @if (isLoading()) {
+            @for (i of skeletonPlaceholders; track i) {
+              <tr>
+                <td colspan="5" class="px-4 py-3 sm:px-5">
+                  <div
+                    class="h-11 animate-pulse rounded-xl bg-slate-200/60 dark:bg-white/10"
+                  ></div>
+                </td>
+              </tr>
+            }
+          } @else if (
+            filteredCoins().length === 0 && searchQuery().trim().length > 0
+          ) {
+            <tr>
+              <td
+                colspan="5"
+                class="px-4 py-10 text-center text-sm text-slate-600 dark:text-slate-300 sm:px-5"
+                role="status"
+                aria-live="polite"
+              >
+                No hay activos que coincidan con «{{ searchQuery().trim() }}»
+                en esta página. Prueba otro término o cambia de página.
+              </td>
+            </tr>
+          } @else {
+            @for (coin of filteredCoins(); track coin.id) {
+              <tr
+                tabindex="0"
+                role="button"
+                [attr.aria-label]="'Ver detalle de ' + coin.name"
+                class="cursor-pointer transition hover:bg-white/80 focus-visible:bg-white/80 focus-visible:outline-none dark:hover:bg-white/[0.08] dark:focus-visible:bg-white/[0.08]"
+                (click)="openAssetDetail(coin)"
+                (keydown)="onTableRowKeydown($event, coin)"
+              >
+                <td class="px-4 py-3 sm:px-5">
+                  <div class="flex min-w-0 items-center gap-3">
+                    <img
+                      class="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-slate-200/80 dark:ring-white/25"
+                      [src]="coin.image"
+                      [alt]=""
+                      width="36"
+                      height="36"
+                      loading="lazy"
+                    />
+                    <div class="min-w-0">
+                      <p
+                        class="truncate font-semibold text-slate-900 dark:text-white"
+                      >
+                        {{ coin.name }}
+                      </p>
+                      <p
+                        class="truncate text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500 dark:text-white/55"
+                      >
+                        {{ coin.symbol }}
+                      </p>
+                    </div>
+                  </div>
+                </td>
+                <td
+                  class="whitespace-nowrap px-4 py-3 text-right font-medium tabular-nums text-slate-900 dark:text-white sm:px-5"
+                >
+                  {{ coin.current_price | currency: 'USD' : 'symbol' : '1.2-8' }}
+                </td>
+                <td class="whitespace-nowrap px-4 py-3 text-right sm:px-5">
+                  @if (coin.price_change_percentage_24h >= 0) {
+                    <span
+                      class="inline-flex tabular-nums font-semibold text-emerald-700 dark:text-emerald-300"
+                    >
+                      +{{ coin.price_change_percentage_24h | number: '1.2-2' }}%
+                    </span>
+                  } @else {
+                    <span
+                      class="inline-flex tabular-nums font-semibold text-rose-700 dark:text-rose-300"
+                    >
+                      {{ coin.price_change_percentage_24h | number: '1.2-2' }}%
+                    </span>
+                  }
+                </td>
+                <td
+                  class="hidden whitespace-nowrap px-4 py-3 text-right text-slate-700 tabular-nums dark:text-slate-200 md:table-cell sm:px-5"
+                >
+                  {{ coin.market_cap | currency: 'USD' : 'symbol' : '1.0-0' }}
+                </td>
+                <td
+                  class="hidden whitespace-nowrap px-4 py-3 text-right text-slate-700 tabular-nums dark:text-slate-200 lg:table-cell sm:px-5"
+                >
+                  {{ coin.total_volume | currency: 'USD' : 'symbol' : '1.0-0' }}
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  }
   @if (!loadError()) {
     <nav
       class="relative mt-8 flex w-full flex-wrap items-center justify-center gap-3"

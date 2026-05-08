@@ -1,3 +1,4 @@
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import {
   Component,
   computed,
@@ -16,6 +17,25 @@ import { SearchBarComponent } from '../../shared/components/search-bar/search-ba
 
 const MARKETS_PER_PAGE = 10;
 
+const MARKET_VIEW_STORAGE_KEY = 'mwl-market-view';
+
+export type MarketViewMode = 'cards' | 'table';
+
+function readStoredMarketView(): MarketViewMode {
+  if (typeof globalThis.localStorage === 'undefined') {
+    return 'cards';
+  }
+  try {
+    const raw = globalThis.localStorage.getItem(MARKET_VIEW_STORAGE_KEY);
+    if (raw === 'table' || raw === 'cards') {
+      return raw;
+    }
+  } catch {
+    /* ignore */
+  }
+  return 'cards';
+}
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -23,6 +43,8 @@ const MARKETS_PER_PAGE = 10;
     AssetCardComponent,
     AssetCardSkeletonComponent,
     AssetDetailModalComponent,
+    CurrencyPipe,
+    DecimalPipe,
     SearchBarComponent,
   ],
   templateUrl: './dashboard.component.html',
@@ -41,6 +63,7 @@ export class DashboardComponent {
   readonly searchQuery = signal('');
   /** Activo cuyo detalle se muestra en el modal; `null` si está cerrado. */
   readonly detailCoin = signal<Coin | null>(null);
+  readonly marketView = signal<MarketViewMode>(readStoredMarketView());
   readonly filteredCoins = computed((): readonly Coin[] => {
     const needle = this.searchQuery().trim().toLowerCase();
     const list = this.coins();
@@ -106,7 +129,26 @@ export class DashboardComponent {
     this.detailCoin.set(null);
   }
 
+  setMarketView(mode: MarketViewMode): void {
+    this.marketView.set(mode);
+    if (typeof globalThis.localStorage === 'undefined') {
+      return;
+    }
+    try {
+      globalThis.localStorage.setItem(MARKET_VIEW_STORAGE_KEY, mode);
+    } catch {
+      /* ignore */
+    }
+  }
+
   onDetailCardKeydown(event: KeyboardEvent, coin: Coin): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.openAssetDetail(coin);
+    }
+  }
+
+  onTableRowKeydown(event: KeyboardEvent, coin: Coin): void {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       this.openAssetDetail(coin);
