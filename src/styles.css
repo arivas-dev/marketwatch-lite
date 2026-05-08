@@ -23,4 +23,39 @@
     flex-direction: column;
     min-height: 100dvh;
   }
+
+  /* Barra de scroll más visible (Firefox + WebKit; iOS puede seguir usando overlay del sistema). */
+  app-dashboard {
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(148 163 184 / 0.75) rgb(241 245 249 / 0.6);
+  }
+
+  .dark app-dashboard {
+    scrollbar-color: rgb(100 116 139 / 0.85) rgb(15 23 42 / 0.5);
+  }
+
+  app-dashboard::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  app-dashboard::-webkit-scrollbar-track {
+    background: rgb(241 245 249 / 0.65);
+    border-radius: 9999px;
+  }
+
+  .dark app-dashboard::-webkit-scrollbar-track {
+    background: rgb(15 23 42 / 0.45);
+  }
+
+  app-dashboard::-webkit-scrollbar-thumb {
+    background-color: rgb(148 163 184 / 0.75);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  .dark app-dashboard::-webkit-scrollbar-thumb {
+    background-color: rgb(100 116 139 / 0.85);
+  }
 }
