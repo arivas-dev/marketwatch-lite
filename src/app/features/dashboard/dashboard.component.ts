@@ -243,7 +243,7 @@ export class DashboardComponent {
         },
         error: () => {
           this.loadError.set(
-            'No se pudo cargar el mercado. Revisa la API key en `.env` (VITE_COINGECKO_DEMO_API_KEY) y tu conexión.',
+            'No pudimos cargar la información ahora mismo. Comprueba tu conexión a internet y vuelve a intentarlo en un momento.',
           );
           this.coins.set([]);
           this.lastPageResultCount.set(0);
