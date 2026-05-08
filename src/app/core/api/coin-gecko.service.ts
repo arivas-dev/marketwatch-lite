@@ -1,8 +1,6 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
-
-import { environment } from '../../../environments/environment';
 import type { Coin } from '../../models/coin.model';
 import type { CoinDetailView } from '../../models/coin-detail.model';
 import type { CoinGeckoCoinDetailResponse, CoinGeckoMarketRow } from './coin-gecko.types';
@@ -14,11 +12,6 @@ export class CoinGeckoService {
   private readonly http = inject(HttpClient);
 
   getTopMarkets(perPage: number, page: number): Observable<readonly Coin[]> {
-    const key = environment.coingeckoDemoApiKey.trim();
-    const headers = key
-      ? new HttpHeaders({ 'x-cg-demo-api-key': key })
-      : new HttpHeaders();
-
     const safePage = Math.max(1, Math.floor(page));
 
     const params = new HttpParams()
@@ -31,18 +24,12 @@ export class CoinGeckoService {
 
     return this.http
       .get<readonly CoinGeckoMarketRow[]>(`${COINGECKO_API_V3}/coins/markets`, {
-        headers,
         params,
       })
       .pipe(map((rows) => rows.map(mapMarketRowToCoin)));
   }
 
   getCoinDetail(coinId: string, summary: Coin): Observable<CoinDetailView> {
-    const key = environment.coingeckoDemoApiKey.trim();
-    const headers = key
-      ? new HttpHeaders({ 'x-cg-demo-api-key': key })
-      : new HttpHeaders();
-
     const params = new HttpParams()
       .set('localization', 'false')
       .set('tickers', 'false')
@@ -56,7 +43,7 @@ export class CoinGeckoService {
     return this.http
       .get<CoinGeckoCoinDetailResponse>(
         `${COINGECKO_API_V3}/coins/${encodedId}`,
-        { headers, params },
+        { params },
       )
       .pipe(map((body) => mapCoinDetailResponse(body, summary)));
   }
