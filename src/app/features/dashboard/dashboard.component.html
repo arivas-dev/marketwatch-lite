@@ -4,7 +4,24 @@
 />
 <main
   class="relative mx-auto flex w-full max-w-6xl flex-1 flex-col bg-gradient-to-br from-slate-100 via-white to-slate-100 px-4 py-8 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950"
+  [style.transform]="mainPullTransform()"
 >
+  @if (pullDistance() > 0) {
+    <div
+      class="pointer-events-none absolute inset-x-0 top-2 z-[1] flex justify-center sm:hidden"
+      aria-live="polite"
+    >
+      <div
+        class="rounded-full border border-sky-500/25 bg-white/90 px-3 py-1.5 text-[11px] font-medium text-sky-800 shadow-sm backdrop-blur-md dark:border-sky-400/30 dark:bg-slate-900/90 dark:text-sky-100"
+      >
+        @if (pullReleaseReady()) {
+          Suelta para actualizar
+        } @else {
+          Sigue deslizando hacia abajo…
+        }
+      </div>
+    </div>
+  }
   <div
     class="pointer-events-none absolute inset-0 mx-auto max-w-6xl bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(148,163,184,0.22),transparent)] dark:bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(148,163,184,0.14),transparent)]"
     aria-hidden="true"
@@ -14,7 +31,16 @@
       class="relative mb-5 flex w-full flex-col gap-3 rounded-2xl border border-rose-500/25 bg-rose-500/10 px-4 py-3 text-sm text-rose-900 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between dark:border-rose-400/30 dark:bg-rose-500/10 dark:text-rose-100"
       role="alert"
     >
-      <p class="min-w-0 flex-1 leading-relaxed">{{ err }}</p>
+      <div class="min-w-0 flex-1 space-y-2 leading-relaxed">
+        <p>{{ err }}</p>
+        <p
+          class="rounded-lg border border-rose-600/15 bg-white/50 px-2.5 py-1.5 text-[11px] text-rose-950/90 dark:border-rose-300/20 dark:bg-slate-950/40 dark:text-rose-100/90 sm:hidden"
+        >
+          En móvil, con la vista arriba del todo, también puedes
+          <span class="font-semibold">deslizar hacia abajo</span> y soltar para
+          reintentar.
+        </p>
+      </div>
       <button
         type="button"
         class="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl border border-rose-600/30 bg-white/80 px-4 py-2 text-sm font-medium text-rose-950 shadow-sm backdrop-blur-md transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-500 disabled:cursor-not-allowed disabled:opacity-45 sm:self-auto dark:border-rose-300/25 dark:bg-slate-900/60 dark:text-rose-50 dark:hover:bg-slate-900/80 dark:focus-visible:outline-rose-400"
@@ -41,22 +67,43 @@
     </div>
   }
   @if (!loadError()) {
-    <div
-      class="relative mb-6 flex w-full flex-col gap-3 sm:flex-row sm:items-end sm:gap-3"
-    >
-      <div class="min-w-0 flex-1">
-        <app-search-bar [(query)]="searchQuery" />
+    <div class="relative mb-6 flex w-full flex-col gap-2 sm:gap-3">
+      <div
+        class="flex w-full flex-col gap-3 sm:flex-row sm:items-end sm:gap-3"
+      >
+        <div class="min-w-0 flex-1">
+          <app-search-bar [(query)]="searchQuery" />
+        </div>
+        <button
+          type="button"
+          class="hidden h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-300/80 bg-white/60 px-4 text-sm font-medium text-slate-800 shadow-sm backdrop-blur-md transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 disabled:cursor-not-allowed disabled:opacity-45 dark:border-white/15 dark:bg-white/10 dark:text-slate-100 dark:hover:bg-white/15 dark:focus-visible:outline-slate-500 sm:inline-flex sm:w-auto sm:self-auto"
+          [disabled]="isLoading()"
+          (click)="refreshMarkets()"
+          aria-label="Actualizar datos del mercado"
+        >
+          <svg
+            class="h-4 w-4 shrink-0"
+            [class.animate-spin]="isLoading()"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path
+              d="M21 12a9 9 0 1 1-2.64-6.36M21 3v7h-7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Actualizar
+        </button>
       </div>
-      <button
-        type="button"
-        class="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-300/80 bg-white/60 px-4 text-sm font-medium text-slate-800 shadow-sm backdrop-blur-md transition hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-400 disabled:cursor-not-allowed disabled:opacity-45 dark:border-white/15 dark:bg-white/10 dark:text-slate-100 dark:hover:bg-white/15 dark:focus-visible:outline-slate-500 sm:w-auto sm:self-auto"
-        [disabled]="isLoading()"
-        (click)="refreshMarkets()"
-        aria-label="Actualizar datos del mercado"
+      <p
+        class="flex items-start gap-2 rounded-xl border border-slate-200/70 bg-white/40 px-3 py-2 text-[11px] leading-snug text-slate-600 backdrop-blur-sm dark:border-white/10 dark:bg-white/[0.06] dark:text-slate-400 sm:hidden"
       >
         <svg
-          class="h-4 w-4 shrink-0"
-          [class.animate-spin]="isLoading()"
+          class="mt-0.5 h-3.5 w-3.5 shrink-0 text-sky-600 dark:text-sky-400"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -64,13 +111,17 @@
           aria-hidden="true"
         >
           <path
-            d="M21 12a9 9 0 1 1-2.64-6.36M21 3v7h-7"
+            d="M12 5v14M19 12l-7 7-7-7"
             stroke-linecap="round"
             stroke-linejoin="round"
           />
         </svg>
-        Actualizar
-      </button>
+        <span>
+          <span class="font-semibold text-slate-700 dark:text-slate-300">Actualizar en móvil:</span>
+          con el listado arriba del todo, desliza hacia abajo con el dedo y
+          suelta para volver a cargar los datos (igual que en muchas apps).
+        </span>
+      </p>
     </div>
   }
   <ul
