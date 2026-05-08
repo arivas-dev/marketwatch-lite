@@ -36,7 +36,7 @@ jobs:
 
       - name: Build
         env:
-          VITE_COINGECKO_DEMO_API_KEY: ${{ secrets.VITE_COINGECKO_DEMO_API_KEY }}
+          VITE_COINGECKO_DEMO_API_KEY: ${{ vars.COINGECKO_DEMO_API_KEY }}
         run: >
           npm run build --
           --base-href /${{ github.event.repository.name }}/
